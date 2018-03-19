@@ -1,14 +1,13 @@
 
 cmake_minimum_required(VERSION 2.8.12.2)
-project ( Mendelbrot )
+project ( EDP )
 find_package (OpenCV REQUIRED)
 
 set (CMAKE_CXX_COMPILER mpic++)
 
-file (GLOB_RECURSE INCLUDES "include/*.h")
 file (GLOB_RECURSE SOURCES "src/*.cxx")
 
-include_directories( ${OpenCV_INCLUDE_DIRS} ${INCLUDES})
+include_directories( ${OpenCV_INCLUDE_DIRS} include/)
 
 add_executable (main ${SOURCES})
 
