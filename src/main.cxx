@@ -1,50 +1,64 @@
 
 #include "EDP.h"
 #include "mpi.h"
+#include <stdlib.h>
+#include <time.h>
 
 int main (int argc, char** argv)
 {
-	int N=3 ,mystart, myend,start=0,end=3,width,heigth;
-	double *M,*R,*S;
-	
 	checkr(MPI_Init(&argc,&argv),"init");
 
-	worksplit(start,end,commsize(),rank(),&mystart,&myend);
+	srand (time(NULL)+rank())	;
 
-	width=N;
-	heigth=myend-mystart+1;
+	const int HALO_pool_size = 20;
+	double mat[HALO_pool_size];
 
-	printf("mystart=%d myend=%d quants=%d quisoc=%d \n",mystart,myend,commsize(),rank());
+	double *p1,*p2,*p3;
+	p1 = mat;
+	p2 = mat+10;
+	p3 = p2+10;
 
-	M=(double *)malloc(sizeof (double)*width*(heigth+2);
-	R=(double *)malloc(sizeof (double)*width*1);
-	S=(double *)malloc(sizeof (double)*width*1);
-
-	if (M==NULL || R==NULL || S==NULL) 
-    {
-        printf("Out of memory\n");
-        exit(1);
-    }
-
-	printf(" \n");
-
-	if (halo(N,M,R,S,mystart,myend)==1)
+	for (int i = 0; i < HALO_pool_size/2; i++)
 	{
-		for (int j = 0; j <heigth+1; ++j)
-		{
-			for (int  i=0; i<width; ++i)
-			{
-				printf("M=%f, i=%d j=%d \n",*(M+i+j*width),i,j);
-			}	
-		}
+		p2[i] = rand()%100;
 	}
 
+	HALO_update_data _HALO_data;
+	HALO_update_unit _HALO_unit;
 
-	free (R);
-	free (M);
-	free (S);
-	
+	_HALO_unit.partner = (rank()+1)%commsize();
+
+	HALO_data_package send, receive;
+
+	send.start = p2;
+	send.end = p3;
+
+	receive.start = p1;
+	receive.end = p2;
+
+	HALO_data_pair _p;
+
+	_p.send = send;
+	_p.receive = receive;
+
+	_HALO_unit.package.push_back(_p);
+	_HALO_data.push_back(_HALO_unit);
+
+	HALO_update (_HALO_data);
+
+	printf ("I'm processor %d and my data is: \n",rank());
+	printf ("HALO: ");
+	for (int i = 0; i < HALO_pool_size/2; i++)
+	{
+		printf("%f ",p1[i]);
+	}
+	printf ("\nDATA: ");
+	for (int i = 0; i < HALO_pool_size/2; i++)
+	{
+		printf("%f ",p2[i]);
+	}
+	printf ("\n\n");
+
 	MPI_Finalize();
-
 	exit (0);
 }
