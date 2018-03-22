@@ -31,5 +31,8 @@
 *.out
 *.app
 
+# Main
+src/main.cxx
+
 # Build folder
 build/
