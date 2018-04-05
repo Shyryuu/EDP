@@ -1,5 +1,6 @@
 
 #include "EDP.h"
+#include "HALO.h"
 
 using namespace std;
 
