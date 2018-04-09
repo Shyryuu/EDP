@@ -1,0 +1,3 @@
+[submodule "HEAT-COND-Parallel"]
+	path = HEAT-COND-Parallel
+	url = https://github.com/gagocarrilloedgar/HEAT-COND-Parallel
