@@ -1,3 +1,6 @@
 [submodule "HEAT-COND-Parallel"]
 	path = HEAT-COND-Parallel
 	url = https://github.com/gagocarrilloedgar/HEAT-COND-Parallel
+[submodule "MPI-HALO"]
+	path = MPI-HALO
+	url = https://github.com/gagocarrilloedgar/MPI-HALO
